@@ -20,6 +20,23 @@ assertEquals() {
 	true
 }
 
+assertFileExists(){
+	
+	local file=$1
+	
+	if [[ -z $file ]]; then
+		echo "Error. Expected file cannot be empty. Exit" >&2
+		exit 1
+	fi
+	
+	if [[ ! -f $file ]]; then
+		echo "Error. Expected existing file, but the file does not exist: $file. Exit" >&2
+		exit 1
+	fi
+	
+	true
+}
+
 runUnitTests() {
 	local testFileFunctionNames=$(grep -E '^(function )?[[:blank:]]*test.*?[?!(]' "$0" | sed --regexp-extended 's/^function[[:blank:]]*//' | tr -d '(){')
 		

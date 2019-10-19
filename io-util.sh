@@ -163,6 +163,26 @@ dirFiles() {
 	fi
 }
 
+# Copy all files from source to destination. Hidden files are also copied. If the destination directory does not exist, then it will be created.
+# Example:
+# copyAllFiles "$source" "$dest"
+copyAllFiles(){
+	if [[ ! -d $1 ]]; then
+		echo "Cannot copy all files from directory. Directory not found: $1. Exit" >&2
+		exit 1
+	fi
+
+	if [[ -z $2 ]]; then
+		echo "Cannot copy all files from $1 to $2. Destination is empty. Exit" >&2
+		exit 1
+	fi
+
+	cp --archive --no-target-directory "$1" "$2"
+	if [[ $? -ne 0 ]]; then
+		echo "Error copying all files from $1 to $2. Exit" >&2
+		exit 1
+	fi
+}
 
 
 

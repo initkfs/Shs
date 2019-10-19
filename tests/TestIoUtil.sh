@@ -6,6 +6,8 @@ __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$__dir/../io-util.sh"
 
 tempDirForTests=
+destTempDirForTests=
+file1Name=
 file1ForTests=
 
 setOnBeforeTests(){
@@ -18,8 +20,17 @@ setOnBeforeTests(){
 		echo "Create temp directory: $tempDirForTests"
 	fi
 	
-	local fileName1=$(echo -n file1 | md5sum)
-	file1ForTests="$tempDirForTests/${fileName1} tempfile.temp"
+	destTempDirForTests=$(mktemp -d /tmp/XXXXXXXXXXXX)
+	if [[ $? -ne 0 ]]; then
+		echo "Error. Cannot create destination temp directory for test: $destTempDirForTests. Exit" >&2
+		exit 1
+	else 
+		echo "Create destination temp directory: $tempDirForTests"
+	fi
+	
+	local fileHash=$(echo -n file1 | md5sum)
+	file1Name=".${fileHash} tempfile.temp"
+	file1ForTests="$tempDirForTests/$file1Name"
 	touch "$file1ForTests"
 	if [[ $? -ne 0 ]]; then
 		echo "Error. Cannot create temp file for test: $file1ForTests. Exit" >&2
@@ -90,29 +101,58 @@ testDirFiles() {
 	done
 }
 
+testCopyAllFiles(){
+	
+	copyAllFiles "$tempDirForTests" "$destTempDirForTests"
+	assertEquals 0 $?
+	
+	fileCopy="$destTempDirForTests/$file1Name"
+	assertFileExists "$fileCopy"
+}
+
 setOnAfterTests() {
 	if [[ ! -f $file1ForTests ]]; then
-		echo "Error. Can not delete test file: $file1. Exit." >&2
+		echo "Error. Can not delete test file, file not found: $file1ForTests. Exit." >&2
 	else
 		rm "$file1ForTests"
 		if [[ $? -ne 0 ]]; then
-			echo "Unable to delete test file: $file1ForTests"  >&2
+			echo "Error. Unable to delete test file: $file1ForTests. Exit"  >&2
 		fi
 	fi
 	
 	if [[ ! -d $tempDirForTests ]]; then
-		echo "Error. Cannot delete temp test directory: $tempDir" >&2
+		echo "Error. Cannot delete temp test directory, directory not found: $tempDirForTests. Exit" >&2
 	else
 		rmdir "$tempDirForTests"
 		if [[ $? -ne 0 ]]; then
-			echo "Unable to delete test directory: $tempDirForTests"  >&2
+			echo "Error. Unable to delete test directory: $tempDirForTests. Exit"  >&2
 		else
 			#log, prevent data loss
 			echo "Delete test directory: $tempDirForTests"
 		fi
 	fi
+	
+	if [[ ! -d $destTempDirForTests ]]; then
+		echo "Error. Cannot delete destination temp test directory, directory not found: $destTempDirForTests. Exit" >&2
+	else
+		
+		tempFile="$destTempDirForTests/$file1Name"
+		if [[ -f $tempFile ]]; then
+			rm "$tempFile"
+			if [[ $? -ne 0 ]]; then
+			echo "Error. Unable to delete temp test file: $tempFile. Exit"  >&2
+			fi
+		fi
+	
+		rmdir "$destTempDirForTests"
+		if [[ $? -ne 0 ]]; then
+			echo "Error. Unable to delete test directory: $destTempDirForTests. Exit"  >&2
+		else
+			#log, prevent data loss
+			echo "Delete test directory: $destTempDirForTests"
+		fi
+	fi
 }
-
 
 setOnBeforeTests
 runUnitTests
