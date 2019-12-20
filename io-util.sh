@@ -8,13 +8,13 @@
 # -> 
 # But: getFileExtension "file.txt.temp " -> "", extension is empty
 getFileExtension(){
-	local path=$1
+	local -r path=$1
 	if [[ -z $path ]]; then
 		echo "Error. Cannot get file extension. Path is empty. Exit" >&2
 		exit 1
 	fi
 	
-	local ext=${path##*.}
+	local -r ext=${path##*.}
 	if [[ $ext == "$path" ]]; then
 		#extension not found
 		echo ""
@@ -37,24 +37,24 @@ getFileExtension(){
 # -> e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 #    512d47b0ee0cb463598eb8376840216ed2866848300d5952b2e5efee311ee6bc
 dirSha256SumFiles(){
-	local dir=$1
+	local -r dir=$1
 	if [[ ! -d $dir || ! -r $dir || ! -x $dir ]]; then
 		echo "Error. Cannot calculate sha256 sum in directory $dir. Permissions required or directory does not exist. Exit" >&2
 		exit 1
 	fi
 	
-	local hashes=$(find "$dir" -type f -exec sha256sum {} + | awk '{print $1}'  )
+	local -r hashes=$(find "$dir" -type f -exec sha256sum {} + | awk '{print $1}'  )
 	echo "$hashes"
 }
 
 dirCountFiles(){
-	local dir=$1
+	local -r dir=$1
 	if [[ ! -d $dir || ! -r $dir || ! -x $dir ]]; then
 		echo "Error. Cannot get files count in dir $dir. Permissions required or directory does not exist. Exit" >&2
 		exit 1
 	fi
 	
-	local count=$(find "$dir" -type f | wc -l)
+	local -r count=$(find "$dir" -type f | wc -l)
 	echo "$count"
 }
 
@@ -69,7 +69,7 @@ dirCountFiles(){
 # getBasename .
 # -> .
 getBasename() {
-	local path=$1
+	local -r path=$1
 	
 	if [[ -z $path ]]; then
 		echo "Error. Cannot get basename from path. Path is empty. Exit" >&2
@@ -77,7 +77,7 @@ getBasename() {
 	fi
 	
 	#"${_##*/}" is not valid result for some arguments
-	local basename="$(basename "$path")"
+	local -r basename="$(basename "$path")"
 	echo "$basename"
 }
 
@@ -107,14 +107,14 @@ trimLastPathSeparator() {
 #convertToSafeName "f:i!l$ e:/n-a*&me"
 # -> f_i_l__e__n_a__me
 convertToSafe() {
-	local name=$1
+	local -r name=$1
 	
 	if [[ -z $name ]]; then
 		echo "Error. Cannot convert filename to safe form. Filename is empty. Exit" >&2
 		exit 1
 	fi
 	
-	local replaced=$(echo "$name" | sed -e "s/[[:punct:]\/\\ ]/_/g")
+	local -r replaced=$(echo "$name" | sed -e "s/[[:punct:]\/\\ ]/_/g")
 	echo "$replaced"
 }
 
@@ -141,7 +141,7 @@ dirFiles() {
 		exit 1
 	fi
 	
-	local iterator=$2
+	local -r iterator=$2
 	
 	local findPattern
 	if [[ -z $3 ]]; then
@@ -151,7 +151,7 @@ dirFiles() {
 	fi
 	
 	if [[ -n $IFS ]]; then
-		local oldIFS=$IFS
+		local -r oldIFS=$IFS
 	fi
 	
 	while IFS= read -rd '' file <&3; do

@@ -9,7 +9,7 @@
 # printFieldByIndex "$string" 1 
 # -> b
 printFieldByIndex() {
-	local string=$1
+	local -r string=$1
 	if [[ -z $string ]]; then
 		echo "Error printing field by index in string. String is empty. Exit" >&2 
 		exit 1
@@ -30,7 +30,7 @@ printFieldByIndex() {
 	fi
 	
 	#don't delete duplicate '-v'
-	local content=$(echo "$string" | awk -v sep=$separator -F "$separator" -v indexField=$fieldIndex  '{ print $indexField }' )
+	local -r content=$(echo "$string" | awk -v sep=$separator -F "$separator" -v indexField=$fieldIndex  '{ print $indexField }' )
 	echo "$content"
 }
 
@@ -40,7 +40,7 @@ printFieldByIndex() {
 # getCountFields "$string" "-"
 # -> 4
 getCountFields() {
-	local string=$1
+	local -r string=$1
 	if [[ -z $string ]]; then
 		echo "Error calculating fields in string. String is empty. Exit" >&2 
 		exit 1
@@ -51,7 +51,7 @@ getCountFields() {
 	separator=$2
 	fi
 	
-	local content=$(echo "$string" | awk -v sep=$separator -F "$separator" '{ print NF }' )
+	local -r content=$(echo "$string" | awk -v sep=$separator -F "$separator" '{ print NF }' )
 	echo "$content"
 }
 

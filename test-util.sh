@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Author : initkfs
 assertEquals() {
-	local expected=$1
-	local actual=$2
-	local numRegexp='^[0-9]+$'
+	local -r expected=$1
+	local -r actual=$2
+	local -r numRegexp='^[0-9]+$'
 	if [[ $expected =~ $numRegexp && $actual =~ $numRegexp ]] ; then
 		if [[ $actual -ne "$expected" ]]; then
 			echo "Error. Expected number: \"$expected\", but received \"$actual\". Exit" >&2
@@ -22,7 +22,7 @@ assertEquals() {
 
 assertFileExists(){
 	
-	local file=$1
+	local -r file=$1
 	
 	if [[ -z $file ]]; then
 		echo "Error. Expected file cannot be empty. Exit" >&2
@@ -38,7 +38,7 @@ assertFileExists(){
 }
 
 runUnitTests() {
-	local testFileFunctionNames=$(grep -E '^(function )?[[:blank:]]*test.*?[?!(]' "$0" | sed --regexp-extended 's/^function[[:blank:]]*//' | tr -d '(){')
+	local -r testFileFunctionNames=$(grep -E '^(function )?[[:blank:]]*test.*?[?!(]' "$0" | sed --regexp-extended 's/^function[[:blank:]]*//' | tr -d '(){')
 		
 	for testFileFunctionName in $testFileFunctionNames
 	do

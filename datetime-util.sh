@@ -6,7 +6,7 @@
 # getDateISO
 # -> 2017-01-01
 getDateISO() {
-	local date=$(date +%Y-%m-%d)
+	local -r date=$(date +%Y-%m-%d)
 	echo "$date"
 }
 
@@ -14,7 +14,7 @@ getDateISO() {
 # getDateTime
 # -> 2018-07-27 00:39:11
 getDateTime() {
-	local datetime=$(date "+%Y-%m-%d %H:%M:%S")
+	local -r datetime=$(date "+%Y-%m-%d %H:%M:%S")
 	echo "$datetime"
 }
 
@@ -31,7 +31,7 @@ getSafeDateTime() {
 		exit 1
 	fi
 	
-	local safeResult=${dateTime//[: ]/_}
+	local -r safeResult=${dateTime//[: ]/_}
 	echo "$safeResult"
 }
 
@@ -44,7 +44,7 @@ getSecFromDate() {
 	fi
 	
 	#yyyy-mm-dd
-	local datePattern="^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$"
+	local -r datePattern="^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$"
 	if [[ ! $1 =~ $datePattern ]]; then
 		echo "Error. Received incorrect format of date for seconds calculating. Expected ISO format yyyy-mm-dd. But received: '$1'. Exit." >&2
 		exit 1
@@ -73,7 +73,7 @@ getDateDifference() {
 		exit 1
 	fi
 	
-	local convertError="Error converting date to seconds"
+	local -r convertError="Error converting date to seconds"
 	local secFromDate1
 	secFromDate1=$(getSecFromDate "$1")
 	if [[ $? -ne 0 || -z $secFromDate1 ]]; then
@@ -88,7 +88,7 @@ getDateDifference() {
 		exit 1
 	fi
     
-	local difference=$(( (secFromDate1 - secFromDate2) / 86400 ))
+	local -r difference=$(( (secFromDate1 - secFromDate2) / 86400 ))
 	
 	if (( $difference < 0 )); then 
 		echo "$( expr 0 - $difference )"

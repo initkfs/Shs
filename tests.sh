@@ -35,7 +35,7 @@ testFiles=$(find "$testDir" -type f -name 'Test*')
 allFiles=$(echo "$testFiles" | wc -l)
 
 printError() {
-	local message=$1
+	local -r message=$1
 	echo -e "\033[1;31m $message \033[0m" >&2
 }
 

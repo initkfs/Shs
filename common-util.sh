@@ -9,13 +9,13 @@
 # res=$(isCommandExists "blablablah")
 # [[ $res -eq 1 ]] && echo "no"
 isCommandExists() {
-	local devNull='/dev/null'
+	local -r devNull='/dev/null'
 	if [[ ! -w $devNull ]]; then 
 		echo "Error. Cannot check command if exists. $devNull is not writable. Exit" >&2
 		exit 1;
 	fi
 	
-	local command=$1
+	local -r command=$1
 	if [[ -z $command ]]; then
 		echo "Error. Cannot check command if exists. Command is empty. Exit" >&2
 		exit 1;
@@ -33,5 +33,3 @@ isCommandExists() {
 		#return 1
 	fi
 }
-
-

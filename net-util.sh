@@ -2,13 +2,13 @@
 # Author : initkfs
 isValidUrl() {
 	
-	local targetUrl=$1
+	local -r targetUrl=$1
 	if [[ -z $targetUrl ]]; then
 		echo "Error. URL is empty. Unable to check if url is valid." >&2
 		exit 1
 	fi
 	#TODO https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
-	local nonI18nUrlRegex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+	local -r nonI18nUrlRegex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 	if [[ $targetUrl =~ $nonI18nUrlRegex ]]; then
 		echo 0
 	else
@@ -19,7 +19,7 @@ isValidUrl() {
 #https://self-signed.badssl.com" > 000 0
 getServerCode() {
 	
-	local targetUrl=$1
+	local -r targetUrl=$1
 	
 	if [[ -z $targetUrl ]]; then
 		echo "Error. Unable to get server response, url is empty" >&2
@@ -44,15 +44,14 @@ getServerCode() {
 
 isUrlAccessible() {
 	
-	local targetUrl=$1
+	local -r targetUrl=$1
 	
 	if [[ -z $targetUrl ]]; then
 		echo "Error. URL is empty. Unable to check if url is accessible." >&2
 		exit 1
 	fi
 	
-	local codeAndRet
-	codeAndRet=$(getServerCode "$targetUrl")
+	local -r codeAndRet=$(getServerCode "$targetUrl")
 	
 	local serverCode="${codeAndRet% *}"
 	local requestReturnCode="${codeAndRet#* }"
@@ -64,7 +63,7 @@ isUrlAccessible() {
 }
 
 isGoogleAccessible() {
-	local url="https://google.com"
+	local -r url="https://google.com"
 	
 	local result
 	result=$(isUrlAccessible "$url")

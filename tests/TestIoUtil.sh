@@ -28,7 +28,7 @@ setOnBeforeTests(){
 		echo "Create destination temp directory: $tempDirForTests"
 	fi
 	
-	local fileHash=$(echo -n file1 | md5sum)
+	local -r fileHash=$(echo -n file1 | md5sum)
 	file1Name=".${fileHash} tempfile.temp"
 	file1ForTests="$tempDirForTests/$file1Name"
 	touch "$file1ForTests"
@@ -40,7 +40,7 @@ setOnBeforeTests(){
 
 testGetFileExtension() {
 	
-	local pathWithDot="./path .dir"
+	local -r pathWithDot="./path .dir"
 	
 	assertEquals "txt" "$(getFileExtension "${pathWithDot}/file.txt")"
 	
@@ -54,17 +54,17 @@ testGetFileExtension() {
 }
 
 testDirSha256SumFiles() {
-	local sum=$(dirSha256SumFiles "$tempDirForTests")
+	local -r sum=$(dirSha256SumFiles "$tempDirForTests")
 	assertEquals "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" "$sum"
 }
 
 testDirCountFiles() {
-	local count=$(dirCountFiles "$tempDirForTests")
+	local -r count=$(dirCountFiles "$tempDirForTests")
 	assertEquals 1 "$count"
 }
 
 testGetBasename() {
-	local basename=$(getBasename /path-to/dir )
+	local -r basename=$(getBasename /path-to/dir )
 	assertEquals "dir" "$basename"
 	
 	assertEquals "."  "$(getBasename "./")"
@@ -73,15 +73,15 @@ testGetBasename() {
 }
 
 testTrimLastPathSeparator() {
-	local trimmedPath=$(trimLastPathSeparator "/path/file/")
+	local -r trimmedPath=$(trimLastPathSeparator "/path/file/")
 	assertEquals /path/file "$trimmedPath"
 	
-	local backSlashPath="\path\file\\"
+	local -r backSlashPath="\path\file\\"
 	assertEquals "$backSlashPath" "$(trimLastPathSeparator "$backSlashPath" )"
 }
 
 testConvertToSafe(){
-	local converted=$(convertToSafe "f:i!\l$ e:/n-a*&me")
+	local -r converted=$(convertToSafe "f:i!\l$ e:/n-a*&me")
 	assertEquals "f_i__l__e__n_a__me" "$converted"
 }
 

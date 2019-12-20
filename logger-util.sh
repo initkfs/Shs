@@ -18,9 +18,9 @@ fi
 logFormat() {
 	local logFormat='%DATE [%LEVEL] %MESSAGE'
 	
-    local level="$1"
-    local message="$2"
-    local date="$(date '+%F %T %Z')"
+    local -r level="$1"
+    local -r message="$2"
+    local -r date="$(date '+%F %T %Z')"
 
     logFormat="${logFormat/'%MESSAGE'/$message}"
     logFormat="${logFormat/'%LEVEL'/$level}"
@@ -37,16 +37,16 @@ consoleHandler() {
 		level=$LOGGER_LEVEL_ERROR
 	fi
 	
-	local message=$2
-	local defaultMessage="Undefined console message"
+	local -r message=$2
+	local -r defaultMessage="Undefined console message"
 	if [[ -z $message ]]; then
 		echo "Error. Console logger handler: message is empty. Set to default: $defaultMessage" >&2
 		level=$LOGGER_LEVEL_ERROR
 	fi
 	
-	local LOGGER_COLOR_WARNING="\033[1;33m" # Yellow
-	local LOGGER_COLOR_ERROR="\033[1;31m" # Red
-	local LOGGER_RESET_COLOR="\033[0m"
+	local -r LOGGER_COLOR_WARNING="\033[1;33m" # Yellow
+	local -r LOGGER_COLOR_ERROR="\033[1;31m" # Red
+	local -r LOGGER_RESET_COLOR="\033[0m"
 	
 	local levelColor=
 	local levelName=""
@@ -127,7 +127,7 @@ log() {
 		fi
 	fi
 	
-	local logRecord=$(logFormat "$loggerlevel" "$message")
+	local -r logRecord=$(logFormat "$loggerlevel" "$message")
 		
 	#minimal logger level >= global logger level
 	if [[ $loggerlevel -ge $globalLevel ]]; then 
@@ -164,8 +164,7 @@ syslogHandler() {
 	if [[ -z $title ]]; then
 		title=""
 	fi
-	
-	
+
 	local level=$1
 	local defaultLevel=$LOGGER_LEVEL_ERROR
 	
@@ -189,15 +188,15 @@ syslogHandler() {
 }
 
 fileHandler() {
-	local filePath=$LOGGER_FILE_HANDLER_PATH
+	local -r filePath=$LOGGER_FILE_HANDLER_PATH
 	
 	if [[ -z filePath || ! -f $filePath || ! -w $filePath ]]; then
 		echo "Error cannot write log file with path: $filePath. Exit" >&2
 		exit 1
 	fi
 	
-	local level=$1
-	local message=$2
+	local -r level=$1
+	local -r message=$2
 	
 	if [[ ! -f "$filePath" ]]; then
 	touch "$filePath"
@@ -233,8 +232,8 @@ sendNotification() {
 	local title=$2
 	local message=$3
 	
-	local notifyLevels=("low" "normal" "critical")
-	local defaultLevel=critical
+	local -r notifyLevels=("low" "normal" "critical")
+	local -r defaultLevel=critical
 	if [[ -z $1 ]]; then
 		echo "Cannot send notification. Level is empty. Possible levels: '${notifyLevels[@]}'. Set to '$defaultLevel'" >&2
 		level=$defaultLevel
@@ -257,14 +256,14 @@ sendNotification() {
 		message="Undefined notification message"
 		echo "Error. Notification message is empty. Set default message: '$message'" >&2
 	fi
-	
+
 	local timeLimit=5000
 	if [[ ! -z $4 ]]; then
 		timeLimit=$4
 	fi
 	
-messageData="Notification message: $message, level: $level, title: $title"
-#TODO extract function
+	local -r messageData="Notification message: $message, level: $level, title: $title"
+	#TODO extract function
 if [[ -n $(which notify-send) ]]; then
 
 	notify-send -u "$level" -t "$timeLimit" "$title" "$message"
@@ -300,29 +299,29 @@ fi
 
 #sendErrorNotification $message $time-expire
 sendErrorNotification() {
-	local level="critical"
-	local title="Error!"
+	local -r level="critical"
+	local -r title="Error!"
 	sendNotification "$level" "$title" "$1" "$2"
 }
 
 #endWarningNotification $message $time-expire
 sendWarningNotification() {
-	local level="normal"
-	local title="Warning!"
+	local -r level="normal"
+	local -r title="Warning!"
 	sendNotification "$level" "$title" "$1" "$2"
 }
 
 #sendInfoNotification $message $time-expire
 sendInfoNotification() {
 	#TODO 'low' level?
-	local level="normal"
-	local title="Info!"
+	local -r level="normal"
+	local -r title="Info!"
 	sendNotification "$level" "$title" "$1" "$2"
 }
 
 desktopNotificationHandler(){
-	local level=$1
-	local message=$2
+	local -r level=$1
+	local -r message=$2
 	
 	case "$level" in
 	$LOGGER_LEVEL_DEBUG   ) sendInfoNotification "$message";;
@@ -331,4 +330,4 @@ desktopNotificationHandler(){
 	$LOGGER_LEVEL_ERROR   ) sendErrorNotification "$message";;
 	*       ) sendErrorNotification "$message";;
 	esac
-}
+}"

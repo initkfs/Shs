@@ -12,23 +12,23 @@ timePattern="[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}"
 dateTimePattern="^$yearMonthDayPattern ${timePattern}$"
 
 testGetIsoDate() {
-	local dateISO=$(getDateISO)
+	local -r dateISO=$(getDateISO)
 	[[ $dateISO =~ $datePattern ]] || assertEquals 0 $?
 }
 
 testGetDateTime() {
-	local dateTime=$(getDateTime)
+	local pr dateTime=$(getDateTime)
 	[[ $dateTime =~ $dateTimePattern ]] || assertEquals 0 $?
 }
 
 testGetSecFromDate() {
-	local timestamp=$(getSecFromDate 2018-01-01)
+	local -r timestamp=$(getSecFromDate 2018-01-01)
 	assertEquals 1514754000 "$timestamp"
 }
 
 testGetDateDifference(){
-	local date1="2017-01-01"
-	local date2="2017-01-10"
+	local -r date1="2017-01-01"
+	local -r date2="2017-01-10"
 	
 	assertEquals 9  "$(getDateDifference "$date1" "$date2")"
 	
@@ -36,7 +36,7 @@ testGetDateDifference(){
 }
 
 testGetSafeDateTime() {
-	local datetime=$(getSafeDateTime )
+	local -r datetime=$(getSafeDateTime )
 	[[ $datetime =~ ^[[:digit:]_-]+$ ]] || assertEquals 0 $?
 }
 
