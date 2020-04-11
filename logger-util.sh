@@ -330,4 +330,4 @@ desktopNotificationHandler(){
 	$LOGGER_LEVEL_ERROR   ) sendErrorNotification "$message";;
 	*       ) sendErrorNotification "$message";;
 	esac
-}"
+}
