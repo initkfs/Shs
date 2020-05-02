@@ -6,7 +6,12 @@
 # getDateISO
 # -> 2017-01-01
 getDateISO() {
-	local -r date=$(date +%Y-%m-%d)
+	local date
+	date=$(date +%Y-%m-%d)
+	if [[ $? -ne 0 ]]; then
+		echo "Error. Cannot read ISO date, result: '$date'. Exit." >&2
+		exit 1
+	fi
 	echo "$date"
 }
 
@@ -14,7 +19,12 @@ getDateISO() {
 # getDateTime
 # -> 2018-07-27 00:39:11
 getDateTime() {
-	local -r datetime=$(date "+%Y-%m-%d %H:%M:%S")
+	local datetime
+	datetime=$(date "+%Y-%m-%d %H:%M:%S")
+	if [[ $? -ne 0 ]]; then
+		echo "Error. Cannot read datetime, result: '$dateTime'. Exit." >&2
+		exit 1
+	fi
 	echo "$datetime"
 }
 
@@ -26,8 +36,8 @@ getSafeDateTime() {
 	local dateTime
 	dateTime=$(getDateTime)
 	exitCode=$?
-	if [[ $? -ne 0 || -z $dateTime ]]; then
-		echo "Error. Cannot convert datetime $dateTime to the save form. Exit." >&2
+	if [[ $exitCode -ne 0 || -z $dateTime ]]; then
+		echo "Error. Cannot convert datetime $dateTime to the save form, result: '$dateTime', exit code: ${exitCode}. Exit." >&2
 		exit 1
 	fi
 	
@@ -39,7 +49,7 @@ getSafeDateTime() {
 #-> 1514754000
 getSecFromDate() {
 	if [[ -z $1 ]]; then
-		echo "Error. Can not convert date to seconds. Date is empty. Exit." >&2
+		echo "Error. Cannot convert date to seconds. Date is empty. Exit." >&2
 		exit 1
 	fi
 	
@@ -90,8 +100,9 @@ getDateDifference() {
     
 	local -r difference=$(( (secFromDate1 - secFromDate2) / 86400 ))
 	
-	if (( $difference < 0 )); then 
-		echo "$( expr 0 - $difference )"
+	if (( difference < 0 )); then 
+		local -r result=$(( 0 - difference ))
+		echo "$result"
 	else 
 		echo "$difference"
 	fi

@@ -52,17 +52,17 @@ consoleHandler() {
 	local levelName=""
 	
 	case "$level" in
-	$LOGGER_LEVEL_DEBUG ) 
+	"$LOGGER_LEVEL_DEBUG" ) 
 	levelName=DEBUG
 	;;
-	$LOGGER_LEVEL_INFO ) 
+	"$LOGGER_LEVEL_INFO" ) 
 	levelName=INFO
 	;;
-	$LOGGER_LEVEL_WARNING ) 
+	"$LOGGER_LEVEL_WARNING" ) 
 	levelName=WARNING
 	levelColor=$LOGGER_COLOR_WARNING
 	;;
-	$LOGGER_LEVEL_ERROR ) 
+	"$LOGGER_LEVEL_ERROR" ) 
 	levelName=ERROR
 	levelColor=$LOGGER_COLOR_ERROR
 	;;
@@ -74,7 +74,7 @@ consoleHandler() {
 	esac
 	
 	local formattedMessage="$levelName: $message"
-	if [[ ! -z $levelColor ]]; then
+	if [[ -n $levelColor ]]; then
 		formattedMessage="${levelColor}${formattedMessage}${LOGGER_RESET_COLOR}"
 		echo -e "$formattedMessage"
 	else
@@ -99,7 +99,7 @@ log() {
 	
 	local loggerlevel=$1
 	local message=$2
-	if [[ ! -z $3 ]]; then
+	if [[ -n $3 ]]; then
 		local -n logHandlers=$3
 	fi
 	
@@ -149,7 +149,7 @@ log() {
 #Aug 12 21:24:54 user sys_tag: Hello, syslog 
 syslogHandler() {
 	
-	if [[ ! -n $(which "logger") ]]; then
+	if [[ -z $(which "logger") ]]; then
 		echo "Cannot write to syslog. Logger is undefined. Exit" >&2
 		exit 1
 	fi
@@ -175,10 +175,10 @@ syslogHandler() {
 	
 	#TODO default
 	case "$level" in
-	$LOGGER_LEVEL_DEBUG   ) level=debug;;
-	$LOGGER_LEVEL_INFO  ) level=info;;
-	$LOGGER_LEVEL_WARNING   ) level=warn;;
-	$LOGGER_LEVEL_ERROR   ) level=err ;;
+	"$LOGGER_LEVEL_DEBUG"   ) level=debug;;
+	"$LOGGER_LEVEL_INFO"  ) level=info;;
+	"$LOGGER_LEVEL_WARNING"   ) level=warn;;
+	"$LOGGER_LEVEL_ERROR"   ) level=err ;;
 	*       ) 
 	echo "Error. Unsupported syslog level: '$level'. Set to error"
 	level=crit;;
@@ -190,8 +190,8 @@ syslogHandler() {
 fileHandler() {
 	local -r filePath=$LOGGER_FILE_HANDLER_PATH
 	
-	if [[ -z filePath || ! -f $filePath || ! -w $filePath ]]; then
-		echo "Error cannot write log file with path: $filePath. Exit" >&2
+	if [[ -z $filePath || ! -f $filePath || ! -w $filePath ]]; then
+		echo "Error. Сannot write log file with path: $filePath. Exit" >&2
 		exit 1
 	fi
 	
@@ -235,7 +235,8 @@ sendNotification() {
 	local -r notifyLevels=("low" "normal" "critical")
 	local -r defaultLevel=critical
 	if [[ -z $1 ]]; then
-		echo "Cannot send notification. Level is empty. Possible levels: '${notifyLevels[@]}'. Set to '$defaultLevel'" >&2
+		local -r allLevels=${notifyLevels[*]}
+		echo "Cannot send notification. Level is empty. Possible levels: $allLevels. Set to '$defaultLevel'" >&2
 		level=$defaultLevel
 	else 
 	
@@ -258,7 +259,7 @@ sendNotification() {
 	fi
 
 	local timeLimit=5000
-	if [[ ! -z $4 ]]; then
+	if [[ -n $4 ]]; then
 		timeLimit=$4
 	fi
 	
@@ -324,10 +325,10 @@ desktopNotificationHandler(){
 	local -r message=$2
 	
 	case "$level" in
-	$LOGGER_LEVEL_DEBUG   ) sendInfoNotification "$message";;
-	$LOGGER_LEVEL_INFO  ) sendInfoNotification "$message";;
-	$LOGGER_LEVEL_WARNING   ) sendWarningNotification "$message";;
-	$LOGGER_LEVEL_ERROR   ) sendErrorNotification "$message";;
+	"$LOGGER_LEVEL_DEBUG"   ) sendInfoNotification "$message";;
+	"$LOGGER_LEVEL_INFO"  ) sendInfoNotification "$message";;
+	"$LOGGER_LEVEL_WARNING"   ) sendWarningNotification "$message";;
+	"$LOGGER_LEVEL_ERROR"   ) sendErrorNotification "$message";;
 	*       ) sendErrorNotification "$message";;
 	esac
 }

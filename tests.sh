@@ -61,11 +61,11 @@ do
 
 	if [[ $testResult -eq 0 ]]; then
 		echo "Success. $filename" 
-		if [[ ! -z $testOut ]]; then
+		if [[ -n $testOut ]]; then
 			echo "$testOut"
 		fi
 	else
-		if [[ ! -z $testOut ]]; then
+		if [[ -n $testOut ]]; then
 			printError "$testOut"
 		fi
 		

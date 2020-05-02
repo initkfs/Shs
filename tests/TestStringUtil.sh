@@ -10,22 +10,22 @@ separator=";"
 inputStringWithSeparator="apple${separator}orange${separator}mango"
 
 testPrintFieldByIndex() {
-	local result=$(printFieldByIndex "$inputString" 1)
+	local -r result=$(printFieldByIndex "$inputString" 1)
 	assertEquals "orange" "$result" 
 }
 
 testPrintFieldByIndexWithSeparator() {
-	local result=$(printFieldByIndex "$inputStringWithSeparator" 1 "$separator")
+	local -r result=$(printFieldByIndex "$inputStringWithSeparator" 1 "$separator")
 	assertEquals "orange" "$result" 
 }
 
 testGetCountFields() {
-	local result=$(getCountFields "$inputString")
+	local -r result=$(getCountFields "$inputString")
 	assertEquals 3 "$result" 
 }
 
 testGetCountFieldsWithSeparator() {
-	local result=$(getCountFields "$inputStringWithSeparator" "$separator")
+	local -r result=$(getCountFields "$inputStringWithSeparator" "$separator")
 	assertEquals 3 "$result"
 }
 

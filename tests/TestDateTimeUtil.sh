@@ -12,13 +12,17 @@ timePattern="[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}"
 dateTimePattern="^$yearMonthDayPattern ${timePattern}$"
 
 testGetIsoDate() {
-	local -r dateISO=$(getDateISO)
-	[[ $dateISO =~ $datePattern ]] || assertEquals 0 $?
+	local dateISO
+	dateISO=$(getDateISO)
+	exitCode=$?
+	[[ $dateISO =~ $datePattern ]] && assertEquals 0 $exitCode
 }
 
 testGetDateTime() {
-	local pr dateTime=$(getDateTime)
-	[[ $dateTime =~ $dateTimePattern ]] || assertEquals 0 $?
+	local dateTime
+	dateTime=$(getDateTime)
+	exitCode=$?
+	[[ $dateTime =~ $dateTimePattern ]] && assertEquals 0 $exitCode
 }
 
 testGetSecFromDate() {
@@ -36,8 +40,10 @@ testGetDateDifference(){
 }
 
 testGetSafeDateTime() {
-	local -r datetime=$(getSafeDateTime )
-	[[ $datetime =~ ^[[:digit:]_-]+$ ]] || assertEquals 0 $?
+	local datetime
+	datetime=$(getSafeDateTime )
+	exitCode=$?
+	[[ $datetime =~ ^[[:digit:]_-]+$ ]] && assertEquals 0 $exitCode
 }
 
 

@@ -156,7 +156,7 @@ dirFiles() {
 	
 	while IFS= read -rd '' file <&3; do
 		"$iterator" "$file" 3<&-
-	done 3< <(find "$1" $findPattern -print0)
+	done 3< <(find "$1" "$findPattern" -print0)
 	
 	if [[ -n $oldIFS ]]; then
 		IFS=$oldIFS

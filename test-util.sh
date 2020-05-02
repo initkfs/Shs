@@ -42,14 +42,14 @@ runUnitTests() {
 		
 	for testFileFunctionName in $testFileFunctionNames
 	do
-	local exitCode
-	local out
-	out=$("$testFileFunctionName")
-	exitCode=$?
-	if [[ $exitCode -ne 0 ]]; then
-		echo "Function failed with output: $out Function name: $testFileFunctionName in file: $0. Exit code: $exitCode" >&2
-		exit 1
-	fi
+		local exitCode
+		local out
+		out=$("$testFileFunctionName")
+		exitCode=$?
+		if [[ $exitCode -ne 0 ]]; then
+			echo "Function failed with output: $out Function name: $testFileFunctionName in file: $0. Exit code: $exitCode" >&2
+			exit 1
+		fi
 	done
 }
 

@@ -25,12 +25,12 @@ printFieldByIndex() {
 	((fieldIndex++))
 	
 	local separator=" ";
-	if [[ ! -z $3 ]]; then 
+	if [[ -n $3 ]]; then 
 		separator=$3
 	fi
 	
 	#don't delete duplicate '-v'
-	local -r content=$(echo "$string" | awk -v sep=$separator -F "$separator" -v indexField=$fieldIndex  '{ print $indexField }' )
+	local -r content=$(echo "$string" | awk -v sep="$separator" -F "$separator" -v indexField="$fieldIndex"  '{ print $indexField }' )
 	echo "$content"
 }
 
@@ -47,8 +47,8 @@ getCountFields() {
 	fi
 	
 	local separator=" ";
-	if [[ ! -z $2 ]]; then 
-	separator=$2
+	if [[ -n $2 ]]; then 
+		separator=$2
 	fi
 	
 	local -r content=$(echo "$string" | awk -v sep=$separator -F "$separator" '{ print NF }' )
