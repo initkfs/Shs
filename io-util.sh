@@ -183,18 +183,3 @@ copyAllFiles(){
 		exit 1
 	fi
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

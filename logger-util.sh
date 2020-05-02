@@ -199,8 +199,8 @@ fileHandler() {
 	local -r message=$2
 	
 	if [[ ! -f "$filePath" ]]; then
-	touch "$filePath"
-	#TODO check error
+		touch "$filePath"
+		#TODO check error
 	fi
 	
 	echo "$message" >> "$filePath"
@@ -265,37 +265,37 @@ sendNotification() {
 	
 	local -r messageData="Notification message: $message, level: $level, title: $title"
 	#TODO extract function
-if [[ -n $(which notify-send) ]]; then
+	if [[ -n $(which notify-send) ]]; then
 
-	notify-send -u "$level" -t "$timeLimit" "$title" "$message"
-	if [[ $? -ne 0 ]]; then
-		echo "notify-send error. $messageData" >&2
-	fi
-	
-elif [[ -n $(which zenity) ]]; then
-		local zenityLevel="--error"
-		 case "$level" in
-		low)
-			zenityLevel="--info"
-			;;
-		normal)
-			zenityLevel="--info"
-			;;
-		esac
-	zenity $zenityLevel --title="$title" --text="$message"
-	if [[ $? -ne 0 ]]; then
-		echo "zenity error. $messageData" >&2
-	fi
-	
-elif [[ -n $(which xmessage) ]]; then
-	 xmessage -center "TITLE: $title MESSAGE: $message"
-	if [[ $? -ne 0 ]]; then
-		echo "xmessage error. $messageData" >&2
-	fi
+		notify-send -u "$level" -t "$timeLimit" "$title" "$message"
+			if [[ $? -ne 0 ]]; then
+				echo "notify-send error. $messageData" >&2
+			fi
+		
+	elif [[ -n $(which zenity) ]]; then
+			local zenityLevel="--error"
+			 case "$level" in
+			low)
+				zenityLevel="--info"
+				;;
+			normal)
+				zenityLevel="--info"
+				;;
+			esac
+		zenity $zenityLevel --title="$title" --text="$message"
+		if [[ $? -ne 0 ]]; then
+			echo "zenity error. $messageData" >&2
+		fi
+		
+	elif [[ -n $(which xmessage) ]]; then
+		xmessage -center "TITLE: $title MESSAGE: $message"
+		if [[ $? -ne 0 ]]; then
+			echo "xmessage error. $messageData" >&2
+		fi
 
-else
-	echo "Error. Cannot send notification. Unsupported sender. Message: $message, level: $level, title: $title" >&2
-fi
+	else
+		echo "Error. Cannot send notification. Unsupported sender. Message: $message, level: $level, title: $title" >&2
+	fi
 }
 
 #sendErrorNotification $message $time-expire
